@@ -3,6 +3,8 @@ package br.com.caelum.ingresso.model;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,6 +24,8 @@ public class Sala {
     @OneToMany(fetch = FetchType.EAGER)
     private List<Lugar> lugares = new ArrayList<>();
 
+    private BigDecimal preco;
+
     /**
      * @deprecated hibernate only
      */
@@ -29,48 +33,57 @@ public class Sala {
 
     }
 
-    public Sala(String nome) {
-        this.nome = nome;
+    public Sala(String nome, BigDecimal preco) {
+	this.nome = nome;
+	this.preco = preco;
     }
 
     public Integer getId() {
-        return id;
+	return id;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+	this.id = id;
     }
 
     public String getNome() {
-        return nome;
+	return nome;
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+	this.nome = nome;
     }
 
-
     public void add(Lugar lugar) {
-        this.lugares.add(lugar);
+	this.lugares.add(lugar);
     }
 
     public List<Lugar> getLugares() {
-        return lugares;
+	return lugares;
     }
 
     public void setLugares(List<Lugar> lugares) {
-        this.lugares = lugares;
+	this.lugares = lugares;
     }
 
     public Map<String, List<Lugar>> getMapaDeLugares() {
-        if(!this.lugares.isEmpty()){
-            return this.lugares.stream().collect(Collectors.groupingBy(Lugar::getFileira,Collectors.toList()));
-        }
-        return Collections.emptyMap();
+	if (!this.lugares.isEmpty()) {
+	    return this.lugares.stream().collect(Collectors.groupingBy(Lugar::getFileira, Collectors.toList()));
+	}
+	return Collections.emptyMap();
     }
 
-    public Integer lugar(String fileira, Integer posicao){
-        Optional<Lugar> optional = this.lugares.stream().filter((x) -> fileira.equals(x.getFileira()) && posicao.equals(x.getPosicao())).findFirst();
-        return optional.get().getId();
+    public Integer lugar(String fileira, Integer posicao) {
+	Optional<Lugar> optional = this.lugares.stream()
+		.filter((x) -> fileira.equals(x.getFileira()) && posicao.equals(x.getPosicao())).findFirst();
+	return optional.get().getId();
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
     }
 }
